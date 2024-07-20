@@ -1,8 +1,6 @@
-from flask import Flask, request, render_template
+import streamlit as st
 import joblib
 import os
-
-app = Flask(__name__)
 
 # Path ke file model dan vectorizer
 model_path = os.path.join(os.path.dirname(__file__), 'sentiment_model.pkl')
@@ -12,14 +10,13 @@ vectorizer_path = os.path.join(os.path.dirname(__file__), 'vectorizer.pkl')
 model = joblib.load(model_path)
 vectorizer = joblib.load(vectorizer_path)
 
-@app.route('/')
-def home():
-    return render_template('index.html')
+# Streamlit app
+st.title("Sentiment Analysis")
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    if request.method == 'POST':
-        message = request.form['message']
+message = st.text_area("Enter your message:")
+
+if st.button("Predict"):
+    if message:
         data = [message]
         transformed_data = vectorizer.transform(data)
         prediction = model.predict(transformed_data)
@@ -35,7 +32,6 @@ def predict():
         else:
             sentiment_label = "tidak dikenali"
 
-        return render_template('index.html', prediction=sentiment_label)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        st.write(f"Predicted Sentiment: {sentiment_label}")
+    else:
+        st.write("Please enter a message.")
