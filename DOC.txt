@@ -2,7 +2,5 @@ python 3.12.4
 
 pip install joblib
 pip install flask
-
 pip install scikit-learn
-
 pip install streamlit
